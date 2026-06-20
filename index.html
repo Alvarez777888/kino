@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>TEVAS — Все сериалы 2026</title>
+    <title>TEVAS — сериалы и фильмы</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
     <style>
         :root {
@@ -162,76 +162,6 @@
             box-shadow: 0 0 20px var(--shadow);
         }
         .search-bar input::placeholder { opacity: 0.5; }
-        
-        /* ===== ПЛЕЕР (модальное окно) ===== */
-        .player-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.92);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-        .player-overlay.active { display: flex; }
-        .player-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            background: #000;
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: 0 20px 80px rgba(0,0,0,0.8);
-        }
-        .player-container iframe {
-            width: 100%;
-            aspect-ratio: 16/9;
-            border: none;
-            display: block;
-            background: #000;
-        }
-        .player-close {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            background: rgba(0,0,0,0.7);
-            color: #fff;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 22px;
-            cursor: pointer;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-        }
-        .player-close:hover {
-            background: var(--accent);
-            transform: scale(1.1);
-        }
-        .player-title {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 30px 20px 16px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: #fff;
-            font-size: 16px;
-            font-weight: 600;
-            pointer-events: none;
-        }
 
         /* ===== СЕТКА ===== */
         .movie-grid {
@@ -279,6 +209,11 @@
             line-height: 1.3;
             word-break: break-word;
         }
+        .movie-card .year {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 2px;
+        }
         .movie-card .badge {
             position: absolute;
             top: 8px;
@@ -297,7 +232,7 @@
             position: absolute;
             bottom: 56px;
             left: 8px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             color: #fff;
             padding: 2px 8px;
             border-radius: 10px;
@@ -347,22 +282,6 @@
             opacity: 0.6;
             padding: 0 10px;
         }
-        .pagination .page-numbers {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .pagination .page-numbers button {
-            padding: 6px 14px;
-            min-height: 36px;
-            font-size: 13px;
-        }
-        .pagination .page-numbers button.active-page {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #fff;
-        }
 
         /* ===== СОСТОЯНИЯ ===== */
         .loading, .error, .empty {
@@ -404,8 +323,6 @@
             .nav-tabs button { padding: 4px 12px; font-size: 12px; min-height: 34px; }
             .search-bar input { padding: 10px 14px; font-size: 14px; }
             .movie-card .title { font-size: 12px; }
-            .player-container iframe { aspect-ratio: 16/9; }
-            .player-close { width: 32px; height: 32px; font-size: 18px; top: 8px; right: 10px; }
             .pagination button { padding: 8px 18px; font-size: 13px; min-height: 38px; }
         }
         @media (max-width: 380px) {
@@ -443,7 +360,7 @@
 <body>
 
     <header>
-        <div class="logo">🎬 TEVAS <span>все сериалы</span></div>
+        <div class="logo">🎬 TEVAS <span>сериалы и фильмы</span></div>
         <div class="header-controls">
             <span class="count" id="movieCount">0</span>
             <button class="theme-toggle" onclick="toggleTheme()" aria-label="Сменить тему">🌙</button>
@@ -452,6 +369,8 @@
 
     <div class="nav-tabs" id="navTabs">
         <button class="active" data-filter="all">🔥 Все</button>
+        <button data-filter="movie">🎬 Фильмы</button>
+        <button data-filter="series">📺 Сериалы</button>
         <button data-filter="top">🏆 Топ</button>
         <button data-filter="new">🆕 Новинки</button>
         <button data-filter="russian">🇷🇺 Русские</button>
@@ -459,7 +378,7 @@
     </div>
 
     <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="🔍 Найти сериал..." oninput="filterMovies()" autocomplete="off">
+        <input type="text" id="searchInput" placeholder="🔍 Найти фильм или сериал..." oninput="filterMovies()" autocomplete="off">
     </div>
 
     <div class="movie-grid" id="movieGrid">
@@ -472,23 +391,21 @@
         <button id="nextPage" onclick="changePage(1)">Вперёд ▶</button>
     </div>
 
-    <div class="player-overlay" id="playerOverlay" onclick="closePlayer(event)">
-        <div class="player-container" onclick="event.stopPropagation()">
-            <button class="player-close" onclick="closePlayer()">✕</button>
-            <iframe id="playerIframe" src="" allowfullscreen loading="lazy"></iframe>
-            <div class="player-title" id="playerTitle">Загрузка...</div>
-        </div>
-    </div>
-
     <div class="footer">
-        Все сериалы в одном месте • Обновлено: <span id="updateTime"></span>
+        Все фильмы и сериалы в одном месте • Обновлено: <span id="updateTime"></span>
     </div>
 
     <script>
         // ================================================================
-        //  ВСЕ СЕРИАЛЫ (ВСТАВЬ СЮДА ПОЛНЫЙ JSON)
+        //  БАЗОВЫЙ ДОМЕН TEVAS (можно менять)
         // ================================================================
-       const SERIES_DATA = [
+        const BASE_URL = 'https://tevas.work'; // или 'https://pult.tevas.dev'
+
+        // ================================================================
+        //  ВСЕ ФИЛЬМЫ И СЕРИАЛЫ (вставь сюда свои данные)
+        // ================================================================
+       
+const SERIES_DATA = [
             {"title":"След Чикатило","poster":"sled_chikatilo.jpg","link":"https://pult.tevas.dev/serial/sled_chikatilo/?sea=26993719259109&big=982","type":"series","category":"russian","top":true},
 {"title":"Фишер","poster":"fisher_3.jpg","link":"https://pult.tevas.dev/serial/all/fisher/?sea=26993719259109&big=982","type":"series","category":"russian","top":true},
 {"title":"Леший","poster":"leshij.jpg","link":"https://pult.tevas.dev/serial/all/leshij/?sea=26993719259109&big=982","type":"series","category":"russian"},
@@ -2358,9 +2275,8 @@
 {"title":"Табу","poster":"taboo.jpg","link":"https://pult.tevas.dev/serial/all/taboo/","type":"series","category":"foreign"}
         ];
 
-
         // ================================================================
-        //  ПАГИНАЦИЯ
+        //  ЛОГИКА
         // ================================================================
         const ITEMS_PER_PAGE = 15;
         let allMovies = [];
@@ -2368,25 +2284,20 @@
         let currentPage = 1;
         let filteredMovies = [];
 
-        // ================================================================
-        //  ИНИЦИАЛИЗАЦИЯ
-        // ================================================================
         function initMovies() {
-            allMovies = SERIES_DATA.map(m => ({
+            allMovies = MOVIES_DATA.map(m => ({
                 ...m,
                 isNew: !m.top,
-                posterUrl: m.poster.startsWith('http') ? m.poster : 'https://pult.tevas.dev/' + m.poster
+                posterUrl: m.poster.startsWith('http') ? m.poster : BASE_URL + '/' + m.poster,
+                linkUrl: m.link.startsWith('http') ? m.link : BASE_URL + m.link
             }));
             filteredMovies = allMovies;
             currentPage = 1;
             renderPage();
-            updateCount(allMovies.length);
+            document.getElementById('movieCount').textContent = allMovies.length + ' контента';
             document.getElementById('updateTime').textContent = new Date().toLocaleString();
         }
 
-        // ================================================================
-        //  ОТРИСОВКА ТЕКУЩЕЙ СТРАНИЦЫ
-        // ================================================================
         function renderPage() {
             const grid = document.getElementById('movieGrid');
             const totalPages = Math.ceil(filteredMovies.length / ITEMS_PER_PAGE) || 1;
@@ -2404,36 +2315,32 @@
                 return;
             }
 
-            grid.innerHTML = pageMovies.map((m, index) => `
-                <div class="movie-card" data-link="${m.link}" data-title="${m.title}" onclick="openPlayer(this)" style="animation-delay: ${(index % 12) * 0.02}s;">
-                    <img src="${m.posterUrl}" alt="${m.title}" loading="lazy" 
-                         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231a1a2e%22 width=%22200%22 height=%22300%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22central%22 fill=%22%23666%22 font-size=%2216%22>${encodeURIComponent(m.title)}</text></svg>'">
-                    <div class="info">
-                        <div class="title">${m.title}</div>
+            grid.innerHTML = pageMovies.map((m, index) => {
+                const typeLabel = m.type === 'movie' ? '🎬 Фильм' : '📺 Сериал';
+                return `
+                    <div class="movie-card" onclick="window.open('${m.linkUrl}', '_blank')" style="animation-delay: ${(index % 12) * 0.02}s;">
+                        <img src="${m.posterUrl}" alt="${m.title}" loading="lazy" 
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231a1a2e%22 width=%22200%22 height=%22300%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22central%22 fill=%22%23666%22 font-size=%2216%22>${encodeURIComponent(m.title)}</text></svg>'">
+                        <div class="info">
+                            <div class="title">${m.title}</div>
+                            ${m.year ? `<div class="year">📅 ${m.year}</div>` : ''}
+                        </div>
+                        <div class="badge">▶</div>
+                        <div class="type-badge">${m.top ? '⭐ ' : ''}${typeLabel}</div>
                     </div>
-                    <div class="badge">▶</div>
-                    ${m.top ? '<div class="type-badge">⭐ Топ</div>' : '<div class="type-badge">📺 Сериал</div>'}
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             updatePagination(filteredMovies.length, totalPages);
             document.getElementById('movieCount').textContent = filteredMovies.length + ' из ' + allMovies.length;
         }
 
-        // ================================================================
-        //  ПАГИНАЦИЯ - УПРАВЛЕНИЕ
-        // ================================================================
         function updatePagination(total, totalPages) {
-            const prevBtn = document.getElementById('prevPage');
-            const nextBtn = document.getElementById('nextPage');
-            const info = document.getElementById('pageInfo');
-
-            prevBtn.disabled = currentPage <= 1;
-            nextBtn.disabled = currentPage >= totalPages;
-
+            document.getElementById('prevPage').disabled = currentPage <= 1;
+            document.getElementById('nextPage').disabled = currentPage >= totalPages;
             const start = (currentPage - 1) * ITEMS_PER_PAGE + 1;
             const end = Math.min(currentPage * ITEMS_PER_PAGE, total);
-            info.textContent = total > 0 ? `${start}-${end} из ${total}` : '0';
+            document.getElementById('pageInfo').textContent = total > 0 ? `${start}-${end} из ${total}` : '0';
         }
 
         function changePage(delta) {
@@ -2442,20 +2349,20 @@
             if (newPage >= 1 && newPage <= totalPages) {
                 currentPage = newPage;
                 renderPage();
-                // Прокрутка к началу списка
                 document.querySelector('.movie-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
-        // ================================================================
-        //  ФИЛЬТРАЦИЯ И ПОИСК
-        // ================================================================
         function filterMovies() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             let filtered = allMovies;
 
             if (currentFilter !== 'all') {
-                if (currentFilter === 'top') {
+                if (currentFilter === 'movie') {
+                    filtered = filtered.filter(m => m.type === 'movie');
+                } else if (currentFilter === 'series') {
+                    filtered = filtered.filter(m => m.type === 'series');
+                } else if (currentFilter === 'top') {
                     filtered = filtered.filter(m => m.top === true);
                 } else if (currentFilter === 'new') {
                     filtered = filtered.filter(m => m.isNew === true);
@@ -2475,47 +2382,6 @@
             renderPage();
         }
 
-        // ================================================================
-        //  ПЛЕЕР
-        // ================================================================
-        function openPlayer(element) {
-            const link = element.dataset.link;
-            const title = element.dataset.title;
-            const overlay = document.getElementById('playerOverlay');
-            const iframe = document.getElementById('playerIframe');
-            const titleEl = document.getElementById('playerTitle');
-
-            if (!link) {
-                alert('Ссылка на сериал не найдена');
-                return;
-            }
-
-            iframe.src = link;
-            titleEl.textContent = title || 'Сериал';
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            setTimeout(() => {
-                overlay.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
-        }
-
-        function closePlayer(event) {
-            if (event && event.target !== event.currentTarget) return;
-            const overlay = document.getElementById('playerOverlay');
-            const iframe = document.getElementById('playerIframe');
-            overlay.classList.remove('active');
-            iframe.src = '';
-            document.body.style.overflow = '';
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closePlayer();
-        });
-
-        // ================================================================
-        //  НАВИГАЦИЯ ПО РАЗДЕЛАМ
-        // ================================================================
         document.getElementById('navTabs').addEventListener('click', (e) => {
             const btn = e.target.closest('button');
             if (!btn) return;
@@ -2526,9 +2392,6 @@
             filterMovies();
         });
 
-        // ================================================================
-        //  СМЕНА ТЕМЫ
-        // ================================================================
         function toggleTheme() {
             const html = document.documentElement;
             const btn = document.querySelector('.theme-toggle');
@@ -2549,26 +2412,26 @@
             document.querySelector('.theme-toggle').textContent = '☀️';
         }
 
-        function updateCount(count) {
-            // Обновляется в renderPage
-        }
-
-        // ================================================================
-        //  ЗАПУСК
-        // ================================================================
         initMovies();
     </script>
 
 </body>
 </html>
-        
-        
-        
-        
-        
-        
-        
-        
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         
         
