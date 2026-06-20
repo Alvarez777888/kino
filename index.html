@@ -3,150 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Клон TEVAS (с парсингом)</title>
+    <title>TEVAS Клон (офлайн-версия)</title>
     <style>
-        /* Современный дизайн со сменой темы */
-        :root {
-            --bg: #0a0a0f;
-            --card: #16161d;
-            --text: #eee;
-            --accent: #6c5ce7;
-            --shadow: rgba(108, 92, 231, 0.3);
-        }
-        [data-theme="light"] {
-            --bg: #f0f0f5;
-            --card: #ffffff;
-            --text: #1a1a1f;
-            --accent: #6c5ce7;
-            --shadow: rgba(0,0,0,0.1);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            transition: background 0.3s, color 0.3s;
-            padding: 20px;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .logo {
-            font-size: 28px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--accent), #a29bfe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .theme-toggle {
-            background: var(--card);
-            border: none;
-            color: var(--text);
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0 4px 15px var(--shadow);
-            transition: 0.3s;
-        }
-        .theme-toggle:hover { transform: scale(1.05); }
-        .search-bar {
-            max-width: 1400px;
-            margin: 0 auto 30px;
-        }
-        .search-bar input {
-            width: 100%;
-            padding: 15px 20px;
-            border-radius: 50px;
-            border: 2px solid var(--card);
-            background: var(--card);
-            color: var(--text);
-            font-size: 16px;
-            transition: 0.3s;
-            outline: none;
-        }
-        .search-bar input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--shadow);
-        }
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .movie-card {
-            background: var(--card);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: 0.3s;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            position: relative;
-        }
-        .movie-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 12px 40px var(--shadow);
-        }
-        .movie-card img {
-            width: 100%;
-            aspect-ratio: 2/3;
-            object-fit: cover;
-            display: block;
-        }
-        .movie-card .info {
-            padding: 12px 15px 15px;
-        }
-        .movie-card .title {
-            font-weight: 600;
-            font-size: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.3;
-        }
-        .movie-card .year {
-            opacity: 0.6;
-            font-size: 13px;
-            margin-top: 4px;
-        }
-        .loading, .error, .empty {
-            text-align: center;
-            padding: 60px 20px;
-            font-size: 18px;
-            opacity: 0.7;
-            grid-column: 1 / -1;
-        }
-        .error { color: #ff6b6b; }
-        .badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--accent);
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            opacity: 0.5;
-            font-size: 14px;
-        }
-        @media (max-width: 600px) {
-            .movie-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-            .logo { font-size: 22px; }
-        }
+        /* Стили те же, что и в прошлом коде — для краткости я их сократил */
+        :root { --bg: #0a0a0f; --card: #16161d; --text: #eee; --accent: #6c5ce7; --shadow: rgba(108,92,231,0.3); }
+        [data-theme="light"] { --bg: #f0f0f5; --card: #ffffff; --text: #1a1a1f; --accent: #6c5ce7; --shadow: rgba(0,0,0,0.1); }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; transition:.3s; padding:20px; }
+        header { display:flex; justify-content:space-between; align-items:center; max-width:1400px; margin:0 auto 30px; flex-wrap:wrap; gap:15px; }
+        .logo { font-size:28px; font-weight:900; background:linear-gradient(135deg,var(--accent),#a29bfe); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .theme-toggle { background:var(--card); border:none; color:var(--text); padding:10px 20px; border-radius:30px; cursor:pointer; font-size:16px; box-shadow:0 4px 15px var(--shadow); transition:.3s; }
+        .theme-toggle:hover { transform:scale(1.05); }
+        .search-bar { max-width:1400px; margin:0 auto 30px; }
+        .search-bar input { width:100%; padding:15px 20px; border-radius:50px; border:2px solid var(--card); background:var(--card); color:var(--text); font-size:16px; transition:.3s; outline:none; }
+        .search-bar input:focus { border-color:var(--accent); box-shadow:0 0 20px var(--shadow); }
+        .movie-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:25px; max-width:1400px; margin:0 auto; }
+        .movie-card { background:var(--card); border-radius:16px; overflow:hidden; transition:.3s; cursor:pointer; box-shadow:0 4px 20px rgba(0,0,0,0.3); position:relative; }
+        .movie-card:hover { transform:translateY(-10px) scale(1.02); box-shadow:0 12px 40px var(--shadow); }
+        .movie-card img { width:100%; aspect-ratio:2/3; object-fit:cover; display:block; }
+        .movie-card .info { padding:12px 15px 15px; }
+        .movie-card .title { font-weight:600; font-size:15px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.3; }
+        .movie-card .year { opacity:0.6; font-size:13px; margin-top:4px; }
+        .badge { position:absolute; top:10px; right:10px; background:var(--accent); color:#fff; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; }
+        .footer { text-align:center; margin-top:50px; opacity:0.5; font-size:14px; }
+        @media (max-width:600px) { .movie-grid { grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; } .logo { font-size:22px; } }
+        .loading, .error, .empty { text-align:center; padding:60px 20px; font-size:18px; opacity:0.7; grid-column:1/-1; }
+        .error { color:#ff6b6b; }
     </style>
 </head>
 <body>
@@ -154,114 +36,21 @@
         <div class="logo">🎬 TEVAS <span style="font-weight:300;background:none;-webkit-text-fill-color:var(--text);">клон</span></div>
         <button class="theme-toggle" onclick="toggleTheme()">🌙 Тёмная</button>
     </header>
-
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="🔍 Поиск фильмов..." oninput="filterMovies()">
     </div>
-
     <div class="movie-grid" id="movieGrid">
-        <div class="loading">⏳ Загрузка фильмов с tevas.work...</div>
+        <div class="loading">📥 Загрузка данных...</div>
     </div>
-    <div class="footer">Данные собираются автоматически с tevas.work • Обновлено: <span id="updateTime"></span></div>
+    <div class="footer">Данные собраны с tevas.work • Фильмов: <span id="count">0</span></div>
 
     <script>
-        // ========== ОСНОВНОЙ ПАРСЕР ==========
-        // Прокси-сервер для обхода CORS (используем бесплатный)
-        const PROXY = 'https://api.allorigins.win/get?url=';
-        const TARGET = 'https://tevas.work/';
+        // ===== ВСТАВЬ СЮДА ДАННЫЕ (JSON), КОТОРЫЕ Я ТЕБЕ ПРИШЛЮ =====
+        const MOVIES_DATA = [];
+
+        // ===========================================================
 
         let allMovies = [];
-
-        async function fetchMovies() {
-            const grid = document.getElementById('movieGrid');
-            try {
-                grid.innerHTML = '<div class="loading">⏳ Парсинг tevas.work...</div>';
-                
-                // 1. Получаем HTML страницы через прокси
-                const response = await fetch(PROXY + encodeURIComponent(TARGET));
-                const data = await response.json();
-                const html = data.contents;
-
-                // 2. Извлекаем все блоки фильмов
-                // Ищем все <a href="?f=..."> с вложенным <div class="v vi p">
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                
-                // Находим все ссылки на фильмы
-                const links = doc.querySelectorAll('a[href^="?f="]');
-                
-                if (links.length === 0) {
-                    throw new Error('Не найдено ни одного фильма. Возможно, сайт изменил структуру.');
-                }
-
-                const movies = [];
-                links.forEach(link => {
-                    // Извлекаем название файла из href
-                    const href = link.getAttribute('href');
-                    const fileName = href.replace('?f=', '').replace('.mp4', '');
-                    
-                    // Ищем внутри ссылки блок с постером и названием
-                    const posterDiv = link.querySelector('.v.vi.p');
-                    if (!posterDiv) return;
-                    
-                    const img = posterDiv.querySelector('img');
-                    const span = posterDiv.querySelector('span');
-                    
-                    if (img && span) {
-                        // Получаем путь к постеру
-                        let posterSrc = img.getAttribute('src');
-                        // Преобразуем относительный путь в абсолютный
-                        if (posterSrc && posterSrc.startsWith('../../')) {
-                            posterSrc = posterSrc.replace('../../', 'https://tevas.work/');
-                        } else if (posterSrc && posterSrc.startsWith('./')) {
-                            posterSrc = posterSrc.replace('./', 'https://tevas.work/');
-                        } else if (posterSrc && !posterSrc.startsWith('http')) {
-                            posterSrc = 'https://tevas.work/' + posterSrc;
-                        }
-                        
-                        // Чистим название от лишних пробелов и (Camrip)
-                        let title = span.textContent.trim();
-                        // Убираем (Camrip) и подобные пометки
-                        title = title.replace(/\s*\([^)]*\)\s*/g, '').trim();
-                        
-                        // Пытаемся извлечь год (если есть в конце)
-                        let year = '';
-                        const yearMatch = title.match(/\b(19|20)\d{2}\b/);
-                        if (yearMatch) {
-                            year = yearMatch[0];
-                        }
-                        
-                        movies.push({
-                            title: title || fileName.replace(/_/g, ' '),
-                            year: year,
-                            poster: posterSrc || 'https://via.placeholder.com/300x450/1a1a2e/6c5ce7?text=No+Poster',
-                            link: 'https://tevas.work/' + href,
-                            fileName: fileName
-                        });
-                    }
-                });
-
-                // Убираем дубликаты по названию
-                const uniqueMovies = [];
-                const seen = new Set();
-                movies.forEach(m => {
-                    const key = m.title.toLowerCase();
-                    if (!seen.has(key)) {
-                        seen.add(key);
-                        uniqueMovies.push(m);
-                    }
-                });
-
-                allMovies = uniqueMovies;
-                renderMovies(allMovies);
-                document.getElementById('updateTime').textContent = new Date().toLocaleString();
-
-            } catch (error) {
-                console.error(error);
-                grid.innerHTML = `<div class="error">❌ Ошибка: ${error.message}<br><br>
-                <button onclick="fetchMovies()" style="padding:12px 30px;border-radius:30px;border:none;background:var(--accent);color:#fff;font-size:16px;cursor:pointer;">🔄 Попробовать снова</button></div>`;
-            }
-        }
 
         function renderMovies(movies) {
             const grid = document.getElementById('movieGrid');
@@ -269,7 +58,6 @@
                 grid.innerHTML = '<div class="empty">😕 Фильмы не найдены</div>';
                 return;
             }
-
             grid.innerHTML = movies.map(m => `
                 <div class="movie-card" onclick="window.open('${m.link}', '_blank')">
                     <img src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450/1a1a2e/6c5ce7?text=No+Poster'">
@@ -280,19 +68,13 @@
                     <div class="badge">▶ Смотреть</div>
                 </div>
             `).join('');
+            document.getElementById('count').textContent = movies.length;
         }
 
         function filterMovies() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            if (!query) {
-                renderMovies(allMovies);
-                return;
-            }
-            const filtered = allMovies.filter(m => 
-                m.title.toLowerCase().includes(query) || 
-                m.year.includes(query)
-            );
-            renderMovies(filtered);
+            if (!query) { renderMovies(allMovies); return; }
+            renderMovies(allMovies.filter(m => m.title.toLowerCase().includes(query) || m.year.includes(query)));
         }
 
         function toggleTheme() {
@@ -307,8 +89,22 @@
             }
         }
 
-        // Запускаем парсинг при загрузке
-        fetchMovies();
+        // Загрузка данных
+        if (MOVIES_DATA.length > 0) {
+            allMovies = MOVIES_DATA;
+            renderMovies(allMovies);
+        } else {
+            document.getElementById('movieGrid').innerHTML = `
+                <div class="error">
+                    ❌ Данные не загружены.<br><br>
+                    <button onclick="location.reload()" style="padding:12px 30px;border-radius:30px;border:none;background:var(--accent);color:#fff;font-size:16px;cursor:pointer;">
+                        🔄 Обновить
+                    </button>
+                    <br><br>
+                    <span style="font-size:14px;opacity:0.6;">Или сохрани страницу tevas.work и пришли мне — я соберу данные за 2 минуты</span>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>
